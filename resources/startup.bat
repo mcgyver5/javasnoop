@@ -14,30 +14,16 @@ set safe_policy=resources\safe.policy
 set user_policy=%USERPROFILE%\.java.policy
 set user_policy_jk=%USERPROFILE%\AppData\LocalLow\Sun\Java\Deployment\security\java.policy
 
-echo %JAVA_HOME% | find /i "1.7" > NUL
+echo %JAVA_HOME% | find /i "jdk" > NUL
 
 if not errorlevel 1 (
-echo [1] Found 1.7 Java in JAVA_HOME variable!
+echo [1] Found Java JDK in JAVA_HOME variable!
 copy "%JAVA_HOME%\lib\tools.jar" .\lib\tools.jar
 set JDK_EXEC="%JAVA_HOME%\bin\java.exe"
 ) else (
-echo [1] JAVA_HOME variable wasn't set to a valid Java 1.7+ installation.
-echo Reading from registry to find other 1.7 installations...
+echo [1] JAVA_HOME variable wasn't set to a valid Java installation.
+echo exiting.
 goto :EOF
-reg query "HKEY_LOCAL_MACHINE\SOFTWARE\JavaSoft\Java Development Kit\1.7" /v JavaHome > jver.tmp
-
-if errorlevel 1 (
-del jver.tmp 2>NUL
-echo [2] Can't find Java installation through JAVA_HOME environment or
-echo through registry. Exiting.
-goto :EOF
-)
-
-type jver.tmp |more /E +2 > jdk.tmp
-set /P jdk=NUL
-set JDK_EXEC=!jdk!\bin\java.exe
-del jver.tmp 2>NUL
-del jdk.tmp 2>NUL
 )
 
 echo [2] Turning off Java security for JavaSnoop usage.
